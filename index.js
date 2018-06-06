@@ -1,17 +1,24 @@
 const hapi = require('hapi')
 const mongoose = require('mongoose')
 const Painting = require('./models/painting')
+const { GraphqQLObjectType, GraphQLString } = graphql
+const schema = require('./graphql/schema')
+
+mongoose.connect('mongodb://admin:password1@ds251240.mlab.com:51240/mongoose_test')
+
+mongoose.connection.once('open', () => {
+  console.log('connected to db')
+})
+
+const server = hapi.server({
+  port: 4000,
+  host: 'localhost'
+})
 
 const init = async() => {
-  mongoose.connect('mongodb://admin:password1@ds251240.mlab.com:51240/mongoose_test')
+  await server.register({
+    plugin: graphiqlHapi,
 
-  mongoose.connection.once('open', () => {
-    console.log('connected to db')
-  })
-
-  const server = hapi.server({
-    port: 4000,
-    host: 'localhost'
   })
 
   server.route([
